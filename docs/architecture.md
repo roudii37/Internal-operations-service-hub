@@ -29,7 +29,7 @@ Providing the title and description
 Opening a request to view details
 Viewing the progress
 Reading comments
-An employee should only be able to view their requests or the ones they have access to.
+An employee should only be able to view requests that they created.
 
 -Department staff are responsible for processing the request in the relevant departments.
 Each department (IT, Finance, HR) has its staff responsible for resolving the request.
@@ -45,8 +45,16 @@ Unless otherwise stated, the staff should only have access to the requests in th
 Their responsibilities may include:
 Viewing requests
 Viewing the status of requests to ensure nothing is left pending
-The extent of a manager’s access should be defined.
-They may either have access to their department only or to all requests in the system.
+
+Managers are responsible for overseeing the processing of requests in their department.
+
+Responsibilities include:
+
+- Viewing requests belonging to their department
+- Monitoring request status
+- Identifying requests that remain pending
+
+A Manager's access is limited to the department they manage.
 
 -An administrator is responsible for configuring the system and managing its global settings.
 Responsibilities may include:
@@ -68,7 +76,7 @@ Request creation
 Request routing to departments
 Displaying of requests
 Status management
-Commenting and notes
+Comments
 Access control
 History of requests
 Administrative configuration
@@ -82,7 +90,6 @@ Business processes peculiar to each department
 Email system
 Advanced analytics
 Data mining
-For example, while the Internal Operations Service Hub can notify the IT support about an employee’s problem with the computer, the actual resolution of this issue will depend on the IT support staff.
 
 ## Components
 
@@ -108,7 +115,7 @@ and defining what this user is allowed to do in the system.
 In other words, this component should ensure that only the authorized
 users access the system and that these users only perform the tasks they are allowed to perform.
 
-The authorization should be enforced by the system and should not rely solely on UI restrictions.
+Authorization must be enforced by the backend and must not rely solely on hiding or disabling functionality in the User Interface.
 
 4.3 Request Management
 
@@ -124,7 +131,7 @@ Updating the status
 Updating the request data
 Adding comments
 Closing or resolving requests
-
+Recording significant request status changes in Request History.
 4.4 Department Management
 
 The Department Management component is responsible for maintaining the list of departments
@@ -168,9 +175,7 @@ The system should have as few external dependencies as possible.
 One possible external dependency is the employee directory or authentication service
 if the company has one. In other words, the Internal Operations Service Hub
 may rely on another service for employee identification and authentication.
-Email or notification system is not considered a critical dependency
-since it is still unclear whether the system will require email notifications.
-
+Email and notification services are outside the scope and therefore are not required dependencies for the initial release.
 
 ## Main Flow
 
@@ -216,7 +221,7 @@ In doing so, the employee can see that their request has moved from Open to In P
 
 8. Resolving
 
-Once the staff has resolved the issue, they can update the status to Resolved or Closed and add a comment.
+Once the staff has resolved the issue, they can update the status to Resolved -> Closed and add a comment.
 
 9. Final Employee View
 
@@ -224,29 +229,33 @@ The employee views the updated status and can see that the request has been reso
 
 ## Information Flow
 
-The general information flow is as follows:
-Employee
-User Interface
-Authentication / Authorization
-Request Management
-Department Routing
-Request Storage
-Department Staff
+The main information flow for both Employees and Department Staff is:
 
-When the Department Staff updates the request, the information flows in the opposite direction.
-This ensures that the information visible to Employees is consistent with the actual data.
+User
+- User Interface
+- Backend Authentication / Authorization
+- Request Management
+- Request Storage
+
+Employees use this flow to create and retrieve their Requests.
+
+Department Staff use the same flow to retrieve department Requests,
+update their status, and add Comments.
+
+All authorization checks are performed before protected Request data is returned or modified.
 
 ## Trust and Authorization Boundaries
 
 The Internal Operations Service Hub typically stores and processes sensitive or confidential information;
 hence, these trust and authorization boundaries are of particular importance.
 
+
 -Employee Trust/Authorization Boundary
 An employee should be able to:
 Create a request
 View their requests
 See comments for their requests
-An employee should not be able to view other employees’ requests unless they have explicit access to them.
+
 
 -Department Trust/Authorization Boundary
 
@@ -256,7 +265,6 @@ For example, IT staff should only be able to process IT-related requests.
 -Manager Trust/Authorization Boundary
 
 Managers have an extended set of viewing permissions to be able to oversee the progress of requests.
-Whether these permissions are global or limited to the Manager’s department is unclear at this point.
 
 -Administrator Trust/Authorization Boundary
 
@@ -299,8 +307,8 @@ This decision simplifies the system and makes it easier to use. It also prevents
 Reason:
 The product specification requires the system to standardize how internal service requests are managed.
 
--Decision 2: Role-based access
-The system will recognize four types of users: Employees, Department Staff, Managers, and Administrators.
+-Decision 2: Department-scoped role-based access control
+Department Staff and Managers receive access according to both their roleand their associated department.
 Impact:
 Each user type will have different features available to them.
 Reason:
@@ -321,7 +329,7 @@ Waiting on information
 Resolved
 Closed
 Impact:
-The status will be visible to all users authorized to view that request.
+The status will be visible to users authorized to access that request.
 Reason:
 The product specification requires that the employee is always aware of the status of their request. Hence, the system must always store the latest status.
 

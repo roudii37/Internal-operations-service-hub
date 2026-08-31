@@ -1,6 +1,6 @@
--Internal Operations Service Hub
+# Internal Operations Service Hub
 
-* Overview
+## Overview
 
 The Internal Operations Service Hub is an internal company platform that allows employees to submit service requests to departments such as IT, HR, and Finance.
 
@@ -13,7 +13,7 @@ The system supports four main user roles:
 - Manager
 - Administrator
 
-* Main Features
+# Main Features
 
 - User authentication and authorization
 - Create service requests
@@ -27,7 +27,7 @@ The system supports four main user roles:
 - Request history
 - Role-based access control
 
-* Project Documentation
+## Project Documentation
 
 The project documentation is located in the `docs` folder:
 
@@ -36,7 +36,7 @@ The project documentation is located in the `docs` folder:
 - Data Model:(docs/data-model.md)
 - ADR-001: Department-Scoped Role-Based Access Control:(docs/decisions/ADR-001.md)
 
-* Architecture
+## Architecture
 
 The Internal Operations Service Hub uses a centralized architecture consisting of:
 
@@ -49,7 +49,7 @@ The Internal Operations Service Hub uses a centralized architecture consisting o
 
 ![Internal Operations Service Hub Architecture](docs/internalservice.drawio.png)
 
-* FirstVersion
+## FirstVersion
 
 The first version focuses on the product foundation and basic request-management requirements.
 
@@ -61,3 +61,10 @@ It does not yet include:
 - Advanced analytics
 - Complete frontend/backend implementation
 - Reopening closed requests
+
+## Project Documentation
+
+- [Product Specification](docs/product-spec.md)
+- [Architecture](docs/architecture.md)
+- [Data Model](docs/data-model.md)
+- [ADR-001: Department-Scoped Role-Based Access Control](docs/decisions/ADR-001.md)

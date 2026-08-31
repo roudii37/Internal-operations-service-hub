@@ -50,7 +50,7 @@ Each request belongs to one department.
 
 ---
 
-### Request
+### Request entity
 
 A Request represents a support or service request created by an employee.
 
@@ -92,6 +92,9 @@ One request can have many comments.
 
 Each comment belongs to one request and has one author.
 
+Comments are visible to the requester and authorized department users.
+Private staff-only notes are not included.
+
 ---
 
 ### Request History
@@ -106,14 +109,23 @@ Important fields:
 - previous_status
 - new_status
 - created_at
-
+- event-type
 This allows the system to keep track of the progress of a request.
 
 ---
 
-### User Role
+### User Role Assignment
 
-The User Role defines what a user is allowed to do.
+A User Role Assignment associates a User with a role and,
+when required, a Department.
+
+Important fields:
+
+- id
+- user_id
+- role
+- department_id
+- created_at
 
 The supported roles are:
 
@@ -122,9 +134,9 @@ The supported roles are:
 - Manager
 - Administrator
 
-Department Staff and Managers are associated with a department.
+The department_id is required for Department Staff and Manager assignments.
 
-This association is used to determine which requests they are allowed to access.
+Employee and Administrator assignments do not require a department.
 
 ---
 
@@ -195,7 +207,7 @@ The following rules must always be maintained:
 
 ---
 
-## 6. Storage
+## 6. Storage model
 
 The following information must be stored permanently:
 
@@ -207,7 +219,13 @@ The following information must be stored permanently:
 - Comments
 - Request History
 
-Some information does not need to be stored separately because it can be calculated from the stored data.
+
+
+The Internal Operations Service Hub will use a relational data model.
+
+A relational database is appropriate because the system contains structured entities with clear relationships between Users Departments, Role Assignments, Requests,Comments, and Request History.
+
+A relational model also provides strong consistency for important operations such as Request creation, status changes, and authorization relationships.
 
 Examples include:
 
@@ -272,12 +290,38 @@ Useful indexes include:
 - Request department_id and status.
 - Comment request_id.
 - Request History request_id.
-- User email.
 - Request request_number.
 
 These indexes support the most common Employee and Department Staff operations.
 
 ---
+
+## Consistency Rules
+
+Important operations should preserve data consistency.
+
+When a Request is created, the Request record and its initial History entry
+should either both be stored successfully or both fail.
+
+When the status of a Request changes, the current Request status
+and the corresponding Request History entry should be updated together.
+
+This prevents the current Request state and its History from becoming inconsistent.
+
+
+---
+
+## Unknowns
+
+The following data-model questions remain open for future clarification:
+
+- Can a User hold department-scoped roles in multiple Departments?
+- Can an existing Request be transferred from one Department to another?
+- Will private staff-only notes require a separate model or visibility rule?
+- Can a Manager oversee multiple Departments?
+- What format should be used for the human-readable Request number?
+- How long should closed Requests and Request History be retained?
+- Should inactive Users and Departments ever be permanently deleted?
 
 ## 9. Firstversion Decisions
 
@@ -290,3 +334,4 @@ For the first version of the Internal Operations Service Hub:
 - Managers can view Requests from their own Department.
 - External customers are not supported.
 - Employees cannot change the processing status of Requests.
+
